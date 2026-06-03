@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SpendVision"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#1A3A6B" />
+
+        <TextView
+            android:id="@+id/totalSpentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total spent: £0.00"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="32dp"
+            android:textColor="#333333" />
+
+        <TextView
+            android:id="@+id/receiptsCountText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Receipts saved: 0"
+            android:textSize="18sp"
+            android:layout_marginTop="12dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/categoryBreakdownText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Categories will appear here"
+            android:textSize="18sp"
+            android:layout_marginTop="28dp"
+            android:textColor="#333333" />
+
+        <Button
+            android:id="@+id/scanReceiptBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan Receipt"
+            android:layout_marginTop="40dp" />
+
+        <Button
+            android:id="@+id/viewExpensesBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Expenses"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/statisticsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Statistics"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+
+</ScrollView>
