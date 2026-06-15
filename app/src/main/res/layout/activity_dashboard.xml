@@ -52,21 +52,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Scan Receipt"
-            android:layout_marginTop="40dp" />
+            android:layout_marginTop="40dp"
+            android:backgroundTint="#189447"
+            />
 
         <Button
             android:id="@+id/viewExpensesBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View Expenses"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#189447"
+            />
 
         <Button
             android:id="@+id/statisticsBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Statistics"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#189447"
+            />
 
     </LinearLayout>
 
