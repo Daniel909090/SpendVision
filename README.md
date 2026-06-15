@@ -19,6 +19,7 @@ The application also allows users to track long-term financial commitments such 
 What makes SpendVision different is the integration of OpenClaw. Rather than simply storing spending data, OpenClaw acts as an intelligent financial agent that analyses user spending behaviour, identifies recurring patterns, detects unusual expenses, and generates personalised financial insights.
 
 SpendVision exports structured receipt data to an OpenClaw Financial Advisor workflow. OpenClaw analyses the user's spending, identifies high-risk categories, detects unusual expenses, and generates practical budgeting recommendations.
+
 Using OpenClaw workflows, SpendVision can:
 
 * Analyse spending habits across categories and time periods
@@ -28,6 +29,46 @@ Using OpenClaw workflows, SpendVision can:
 * Generate personalised budgeting recommendations
 * Create financial summaries and reports automatically
 * Alert users to unusual or unexpected spending patterns
+
+## OpenClaw Financial Advisor Workflow
+
+SpendVision integrates with an OpenClaw Financial Advisor agent powered by GPT-5.5. Structured spending data is exported from the Android application as JSON and analysed by OpenClaw to generate detailed financial reports.
+
+### Workflow
+
+Receipt Image
+↓
+Google ML Kit OCR
+↓
+ReceiptParserService
+↓
+SQLite Database
+↓
+JSON Export
+↓
+OpenClaw Financial Advisor Agent
+↓
+GPT-5.5 Analysis
+↓
+Financial Insights & Recommendations
+
+### Example OpenClaw Analysis
+
+<p align="center">
+  <img src="images/openclaw_rec.png" width="900">
+</p>
+
+The OpenClaw Financial Advisor generates:
+
+* Total spending summaries
+* Category breakdowns and spending percentages
+* Highest spending categories
+* Spending risk identification
+* Cost-saving opportunities
+* Personalised budgeting recommendations
+* Executive summaries and financial conclusions
+
+This workflow transforms SpendVision from a receipt-tracking application into an intelligent financial assistant capable of delivering AI-generated financial insights based on real spending behaviour.
 
 ## Features
 
