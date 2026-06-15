@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "spendvision.db";
@@ -37,6 +40,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         ")";
 
         db.execSQL(createTable);
+    }
+
+    public JSONArray getExpensesAsJsonArray() {
+        JSONArray expensesArray = new JSONArray();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT " +
+                        COL_ID + ", " +
+                        COL_STORE + ", " +
+                        COL_DATE + ", " +
+                        COL_TOTAL + ", " +
+                        COL_CATEGORY + ", " +
+                        COL_RECEIPT_TEXT +
+                        " FROM " + TABLE_EXPENSES,
+                null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                try {
+                    JSONObject expense = new JSONObject();
+
+                    expense.put("id", cursor.getInt(0));
+                    expense.put("store", cursor.getString(1));
+                    expense.put("date", cursor.getString(2));
+                    expense.put("total", cursor.getString(3));
+                    expense.put("category", cursor.getString(4));
+                    expense.put("raw_receipt_text", cursor.getString(5));
+
+                    expensesArray.put(expense);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return expensesArray;
     }
 
     @Override

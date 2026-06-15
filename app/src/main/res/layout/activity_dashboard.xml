@@ -56,6 +56,7 @@
             android:backgroundTint="#189447"
             />
 
+
         <Button
             android:id="@+id/viewExpensesBtn"
             android:layout_width="match_parent"
@@ -73,6 +74,13 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="#189447"
             />
+
+        <Button
+            android:id="@+id/openClawInsightBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="OpenClaw AI Insight" />
 
     </LinearLayout>
 

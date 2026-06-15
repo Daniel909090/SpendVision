@@ -45,6 +45,7 @@
         <activity
             android:name=".ui.ViewExpensesActivity"
             android:exported="false" />
+        <activity android:name=".ui.OpenClawInsightActivity" />
 
 
 

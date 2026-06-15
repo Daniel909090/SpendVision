@@ -1,0 +1,15 @@
+Read the file openclaw/sample_export.json.
+
+Act as the SpendVision OpenClaw Financial Advisor.
+
+Analyse the receipt spending data and produce:
+
+1. Total spending summary
+2. Category breakdown
+3. Highest spending category
+4. Unusual or risky spending
+5. Possible savings
+6. Practical recommendations
+7. Short conclusion
+
+Use simple language. Do not invent missing data. If there is not enough data, say that confidence is low.

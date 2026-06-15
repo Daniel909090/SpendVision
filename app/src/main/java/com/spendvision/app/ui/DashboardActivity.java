@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.spendvision.app.ui.OpenClawInsightActivity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.spendvision.app.R;
@@ -27,6 +28,15 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        Button openClawInsightBtn = findViewById(R.id.openClawInsightBtn);
+
+        openClawInsightBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    DashboardActivity.this,
+                    OpenClawInsightActivity.class
+            );
+            startActivity(intent);
+        });
         databaseHelper = new DatabaseHelper(this);
 
         totalSpentText = findViewById(R.id.totalSpentText);
