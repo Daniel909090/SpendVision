@@ -43,21 +43,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Open Camera" />
+            android:text="Open Camera"
+            android:backgroundTint="#189447"
+            />
 
         <Button
             android:id="@+id/choosePhotoBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Choose Existing Photo" />
+            android:text="Choose Existing Photo"
+            android:backgroundTint="#189447"
+            />
 
         <Button
             android:id="@+id/saveExpenseBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Save Expense" />
+            android:text="Save Expense"
+            android:backgroundTint="#189447"
+            />
 
     </LinearLayout>
 
