@@ -1,16 +1,16 @@
 package com.spendvision.app.models;
 
-public class Expense {
+public class Receipt {
 
     private String itemName;
     private double amount;
     private String category;
     private String date;
 
-    public Expense() {
+    public Receipt() {
     }
 
-    public Expense(String itemName, double amount, String category, String date) {
+    public Receipt(String itemName, double amount, String category, String date) {
         this.itemName = itemName;
         this.amount = amount;
         this.category = category;

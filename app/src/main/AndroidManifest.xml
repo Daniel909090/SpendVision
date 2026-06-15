@@ -28,15 +28,6 @@
         </provider>
 
         <activity
-            android:name=".ViewExpensesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ScanReceiptActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DashboardActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -46,7 +37,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StatisticsActivity"
+            android:name=".ui.DashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ScanReceiptActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ViewExpensesActivity"
+            android:exported="false" />
+
+
+
+        <activity
+            android:name=".ui.StatisticsActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>
