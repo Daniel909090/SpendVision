@@ -4,12 +4,6 @@
   <img src="images/SpendVision_app_logo_ext.png" width="250">
 </p>
 
-# SpendVision
-
-<p align="center">
-  <img src="images/SpendVision_app_logo_ext.png" width="250">
-</p>
-
 ## Overview
 
 SpendVision is an AI-powered personal finance assistant that transforms receipt images into actionable financial intelligence.
