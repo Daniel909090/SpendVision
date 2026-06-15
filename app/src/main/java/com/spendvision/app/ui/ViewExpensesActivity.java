@@ -1,4 +1,4 @@
-package com.spendvision.app;
+package com.spendvision.app.ui;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.spendvision.app.R;
 import com.spendvision.app.database.DatabaseHelper;
 
 public class ViewExpensesActivity extends AppCompatActivity {

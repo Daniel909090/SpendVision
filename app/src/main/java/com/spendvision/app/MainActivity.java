@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat;
 import android.content.Intent;
 import android.widget.Button;
 
+import com.spendvision.app.ui.DashboardActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

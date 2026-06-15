@@ -1,4 +1,4 @@
-package com.spendvision.app;
+package com.spendvision.app.ui;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -9,6 +9,7 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.spendvision.app.R;
 import com.spendvision.app.database.DatabaseHelper;
 
 import java.util.ArrayList;

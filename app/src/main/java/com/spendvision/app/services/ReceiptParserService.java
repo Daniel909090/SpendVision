@@ -1,229 +1,20 @@
-package com.spendvision.app;
+package com.spendvision.app.services;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.spendvision.app.utils.CurrencyUtils;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
-import com.google.mlkit.vision.common.InputImage;
-import com.google.mlkit.vision.text.TextRecognition;
-import com.google.mlkit.vision.text.TextRecognizer;
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
-import com.spendvision.app.database.DatabaseHelper;
-
-import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ScanReceiptActivity extends AppCompatActivity {
+public class ReceiptParserService {
 
-    private static final int CAMERA_PERMISSION_CODE = 100;
+    public ParsedReceipt parseReceipt(String text) {
+        String total = findTotal(text);
+        String category = detectCategory(text);
+        String store = detectStore(text);
+        String date = detectDate(text);
+        String items = buildItemsList(text);
 
-    private ImageView receiptPreview;
-    private TextView extractedTextView;
-
-    private Uri cameraImageUri;
-
-    private String lastExtractedText = "";
-    private String lastDetectedTotal = "";
-    private String lastDetectedCategory = "";
-    private String lastDetectedStore = "";
-    private String lastDetectedDate = "";
-
-    private final ActivityResultLauncher<Uri> cameraLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.TakePicture(),
-                    success -> {
-                        if (success && cameraImageUri != null) {
-                            receiptPreview.setImageURI(cameraImageUri);
-                            extractTextFromUri(cameraImageUri);
-                        } else {
-                            Toast.makeText(this, "No photo captured", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-            );
-
-    private final ActivityResultLauncher<String> galleryLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.GetContent(),
-                    uri -> {
-                        if (uri != null) {
-                            receiptPreview.setImageURI(uri);
-                            extractTextFromUri(uri);
-                        } else {
-                            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-            );
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_receipt);
-
-        Button openCameraBtn = findViewById(R.id.openCameraBtn);
-        Button choosePhotoBtn = findViewById(R.id.choosePhotoBtn);
-        Button saveExpenseBtn = findViewById(R.id.saveExpenseBtn);
-
-        receiptPreview = findViewById(R.id.receiptPreview);
-        extractedTextView = findViewById(R.id.extractedTextView);
-
-        openCameraBtn.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    == PackageManager.PERMISSION_GRANTED) {
-                openFullCamera();
-            } else {
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{Manifest.permission.CAMERA},
-                        CAMERA_PERMISSION_CODE
-                );
-            }
-        });
-
-        choosePhotoBtn.setOnClickListener(v -> galleryLauncher.launch("image/*"));
-
-        saveExpenseBtn.setOnClickListener(v -> {
-
-            if (lastExtractedText.isEmpty()) {
-                Toast.makeText(
-                        this,
-                        "Scan or choose a receipt first",
-                        Toast.LENGTH_SHORT
-                ).show();
-                return;
-            }
-
-            DatabaseHelper db = new DatabaseHelper(this);
-
-            boolean saved = db.addExpense(
-                    lastDetectedStore,
-                    lastDetectedDate,
-                    lastDetectedTotal,
-                    lastDetectedCategory,
-                    lastExtractedText
-            );
-
-            if (saved) {
-                Toast.makeText(
-                        this,
-                        "Expense saved successfully",
-                        Toast.LENGTH_LONG
-                ).show();
-            } else {
-                Toast.makeText(
-                        this,
-                        "Failed to save expense",
-                        Toast.LENGTH_LONG
-                ).show();
-            }
-        });
-    }
-
-    private void openFullCamera() {
-        try {
-            File imageFile = createImageFile();
-
-            cameraImageUri = FileProvider.getUriForFile(
-                    this,
-                    getPackageName() + ".fileprovider",
-                    imageFile
-            );
-
-            cameraLauncher.launch(cameraImageUri);
-
-        } catch (Exception e) {
-            Toast.makeText(this, "Camera error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private File createImageFile() throws Exception {
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        if (storageDir == null) {
-            throw new Exception("Storage folder not available");
-        }
-
-        return File.createTempFile(
-                "receipt_",
-                ".jpg",
-                storageDir
-        );
-    }
-
-    private void extractTextFromUri(Uri uri) {
-        extractedTextView.setText("Reading receipt...");
-
-        try {
-            InputImage image = InputImage.fromFilePath(this, uri);
-            runTextRecognition(image);
-        } catch (Exception e) {
-            extractedTextView.setText("Could not read image: " + e.getMessage());
-        }
-    }
-
-    private void runTextRecognition(InputImage image) {
-        TextRecognizer recognizer =
-                TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
-
-        recognizer.process(image)
-                .addOnSuccessListener(result -> {
-                    String extractedText = result.getText();
-
-                    if (extractedText.trim().isEmpty()) {
-                        lastExtractedText = "";
-                        lastDetectedTotal = "";
-                        lastDetectedCategory = "";
-                        lastDetectedStore = "";
-                        lastDetectedDate = "";
-                        extractedTextView.setText("No text found. Try a clearer photo.");
-                    } else {
-                        String total = findTotal(extractedText);
-                        String category = detectCategory(extractedText);
-                        String store = detectStore(extractedText);
-                        String date = detectDate(extractedText);
-                        String items = buildItemsList(extractedText);
-
-                        lastExtractedText = extractedText;
-                        lastDetectedTotal = total;
-                        lastDetectedCategory = category;
-                        lastDetectedStore = store;
-                        lastDetectedDate = date;
-
-                        extractedTextView.setText(
-                                "Receipt Summary\n\n" +
-                                        "Store: " + store +
-                                        "\nDate: " + date +
-                                        "\nCategory: " + category +
-                                        "\n\nTOTAL\n" +
-                                        total +
-                                        "\n\nProducts\n\n" +
-                                        items +
-                                        "\n\nRaw OCR Text\n\n" +
-                                        extractedText
-                        );
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    lastExtractedText = "";
-                    lastDetectedTotal = "";
-                    lastDetectedCategory = "";
-                    lastDetectedStore = "";
-                    lastDetectedDate = "";
-                    extractedTextView.setText("OCR failed: " + e.getMessage());
-                });
+        return new ParsedReceipt(store, date, total, category, items);
     }
 
     private String findTotal(String text) {
@@ -250,9 +41,8 @@ public class ScanReceiptActivity extends AppCompatActivity {
                             || upperLine.contains("CHANGE");
 
             if (isTotalLine && !ignoreLine) {
-
                 for (int j = i; j <= i + 5 && j < lines.length; j++) {
-                    String amount = findMoneyInLine(lines[j]);
+                    String amount = CurrencyUtils.findMoneyInLine(lines[j]);
 
                     if (!amount.equals("")) {
                         return amount;
@@ -270,7 +60,7 @@ public class ScanReceiptActivity extends AppCompatActivity {
                     || upperLine.contains("CONTACTLESS")) {
 
                 for (int j = i; j <= i + 4 && j < lines.length; j++) {
-                    String amount = findMoneyInLine(lines[j]);
+                    String amount = CurrencyUtils.findMoneyInLine(lines[j]);
 
                     if (!amount.equals("")) {
                         return amount;
@@ -279,7 +69,7 @@ public class ScanReceiptActivity extends AppCompatActivity {
             }
         }
 
-        return "Total not found";
+        return findLargestAmount(text);
     }
 
     private String findLargestAmount(String text) {
@@ -303,19 +93,11 @@ public class ScanReceiptActivity extends AppCompatActivity {
             Matcher matcher = pattern.matcher(line);
 
             while (matcher.find()) {
-                String amountText = matcher.group()
-                        .replace("£", "")
-                        .replace(" ", "");
+                double amount = CurrencyUtils.cleanAmount(matcher.group());
 
-                try {
-                    double amount = Double.parseDouble(amountText);
-
-                    if (amount > largest) {
-                        largest = amount;
-                        largestText = "£" + String.format("%.2f", amount);
-                    }
-
-                } catch (Exception ignored) {
+                if (amount > largest) {
+                    largest = amount;
+                    largestText = CurrencyUtils.formatCurrency(amount);
                 }
             }
         }
@@ -327,34 +109,11 @@ public class ScanReceiptActivity extends AppCompatActivity {
         return "Total not found";
     }
 
-
-    private String findMoneyInLine(String line) {
-        Pattern pattern = Pattern.compile("£?\\s?\\d{1,4}[.,]\\d{2}");
-        Matcher matcher = pattern.matcher(line);
-
-        String lastAmount = "";
-
-        while (matcher.find()) {
-            String amount = matcher.group()
-                    .replace(" ", "")
-                    .replace(",", ".");
-
-            if (!amount.startsWith("£")) {
-                amount = "£" + amount;
-            }
-
-            lastAmount = amount;
-        }
-
-        return lastAmount;
-    }
-
     private String buildItemsList(String text) {
         StringBuilder items = new StringBuilder();
         String[] lines = text.split("\\n");
 
-        Pattern pricePattern =
-                Pattern.compile("£?\\s?\\d+\\.\\d{2}");
+        Pattern pricePattern = Pattern.compile("£?\\s?\\d+\\.\\d{2}");
 
         for (String line : lines) {
             String cleanLine = line.trim();
@@ -362,11 +121,7 @@ public class ScanReceiptActivity extends AppCompatActivity {
 
             if (matcher.find()) {
                 String rawPrice = matcher.group();
-                String price = rawPrice.replace(" ", "");
-
-                if (!price.startsWith("£")) {
-                    price = "£" + price;
-                }
+                String price = CurrencyUtils.formatMoneyText(rawPrice);
 
                 String product =
                         cleanLine.replace(rawPrice, "")
@@ -477,7 +232,6 @@ public class ScanReceiptActivity extends AppCompatActivity {
         }
 
         if (upperText.contains("SMYTHS")
-                || upperText.contains("SMYTHS TOYS")
                 || upperText.contains("THE ENTERTAINER")
                 || upperText.contains("TOY")
                 || upperText.contains("GAME")) {
@@ -597,9 +351,7 @@ public class ScanReceiptActivity extends AppCompatActivity {
     }
 
     private String detectDate(String text) {
-        Pattern pattern =
-                Pattern.compile("\\b\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}\\b");
-
+        Pattern pattern = Pattern.compile("\\b\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}\\b");
         Matcher matcher = pattern.matcher(text);
 
         if (matcher.find()) {
@@ -609,21 +361,40 @@ public class ScanReceiptActivity extends AppCompatActivity {
         return "Unknown Date";
     }
 
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            String[] permissions,
-            int[] grantResults
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public static class ParsedReceipt {
 
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openFullCamera();
-            } else {
-                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
-            }
+        private final String store;
+        private final String date;
+        private final String total;
+        private final String category;
+        private final String items;
+
+        public ParsedReceipt(String store, String date, String total, String category, String items) {
+            this.store = store;
+            this.date = date;
+            this.total = total;
+            this.category = category;
+            this.items = items;
+        }
+
+        public String getStore() {
+            return store;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public String getTotal() {
+            return total;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public String getItems() {
+            return items;
         }
     }
 }
