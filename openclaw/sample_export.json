@@ -1,0 +1,46 @@
+{
+  "project": "SpendVision",
+  "agent": "OpenClaw Financial Advisor",
+  "purpose": "Analyse personal spending data and generate financial recommendations.",
+  "data_source": "Receipt data exported from the SpendVision Android app.",
+  "expenses": [
+    {
+      "id": 1,
+      "store": "Tesco",
+      "date": "12/06/2026",
+      "total": "£45.20",
+      "category": "Groceries",
+      "raw_receipt_text": "TESCO MILK 1.75 BREAD 1.20 CHICKEN 5.50 TOTAL 45.20"
+    },
+    {
+      "id": 2,
+      "store": "McDonald's",
+      "date": "13/06/2026",
+      "total": "£18.40",
+      "category": "Restaurant",
+      "raw_receipt_text": "MCDONALDS MEAL 8.99 DRINK 2.49 TOTAL 18.40"
+    }
+  ],
+  "openclaw_task": {
+    "role": "Act as a financial analysis agent. Analyse the user's receipt and spending data.",
+    "main_goal": "Generate a clear financial report that helps the user understand spending behaviour and reduce unnecessary expenses.",
+    "tasks": [
+      "Calculate total spending.",
+      "Group spending by category.",
+      "Identify the highest spending categories.",
+      "Detect unusual or unexpected expenses.",
+      "Find repeated purchases.",
+      "Highlight possible overspending.",
+      "Suggest practical ways to reduce costs.",
+      "Generate a short financial summary written in simple language."
+    ],
+    "expected_output": [
+      "Total spending summary",
+      "Category breakdown",
+      "Main spending risks",
+      "Potential savings",
+      "Recommendations",
+      "One-paragraph conclusion"
+    ]
+  }
+}
