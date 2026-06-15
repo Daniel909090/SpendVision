@@ -17,6 +17,7 @@ The application also allows users to track long-term financial commitments such 
 ## OpenClaw Integration
 
 What makes SpendVision different is the integration of OpenClaw. Rather than simply storing spending data, OpenClaw acts as an intelligent financial agent that analyses user spending behaviour, identifies recurring patterns, detects unusual expenses, and generates personalised financial insights.
+
 SpendVision exports structured receipt data to an OpenClaw Financial Advisor workflow. OpenClaw analyses the user's spending, identifies high-risk categories, detects unusual expenses, and generates practical budgeting recommendations.
 Using OpenClaw workflows, SpendVision can:
 
